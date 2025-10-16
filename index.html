@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>個人介紹網站</title>
+    <title>我的個人網站 - 作品集</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -12,20 +13,22 @@
         }
 
         body {
-            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            font-family: 'Microsoft JhengHei', 'Arial', sans-serif;
             line-height: 1.6;
             color: #333;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
         }
 
+        /* 導航列 */
         nav {
             background: rgba(255, 255, 255, 0.95);
             padding: 1rem 2rem;
             position: sticky;
             top: 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             z-index: 1000;
+            backdrop-filter: blur(10px);
         }
 
         nav ul {
@@ -40,15 +43,17 @@
             text-decoration: none;
             color: #333;
             font-weight: 600;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            transition: all 0.3s;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            position: relative;
         }
 
         nav a:hover {
-            background: #667eea;
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
         }
 
         .container {
@@ -61,15 +66,15 @@
             background: white;
             margin: 2rem 0;
             padding: 3rem;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            animation: fadeIn 0.6s;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            animation: fadeInUp 0.6s ease-out;
         }
 
-        @keyframes fadeIn {
+        @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(30px);
             }
             to {
                 opacity: 1;
@@ -92,142 +97,256 @@
             color: #667eea;
             border-bottom: 3px solid #667eea;
             padding-bottom: 0.5rem;
+            display: inline-block;
         }
 
+        /* 首頁英雄區 */
         .hero {
             text-align: center;
-            padding: 4rem 2rem;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9), rgba(118, 75, 162, 0.9));
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.95), rgba(118, 75, 162, 0.95));
             color: white;
-            border-radius: 15px;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
         }
 
         .hero h1 {
             color: white;
             -webkit-text-fill-color: white;
-            font-size: 3rem;
+            font-size: 3.5rem;
             margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
 
         .hero p {
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             margin-bottom: 2rem;
+            opacity: 0.95;
         }
 
-        .section-orange { border-left: 5px solid #ff6b35; }
-        .section-green { border-left: 5px solid #4caf50; }
-        .section-cyan { border-left: 5px solid #00bcd4; }
-        .section-red { border-left: 5px solid #f44336; }
-
-        .intro-content {
+        /* 團隊介紹區 */
+        .intro-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-top: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
         }
 
         .intro-card {
-            background: #f8f9fa;
-            padding: 1.5rem;
-            border-radius: 10px;
-            transition: transform 0.3s;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            border-left: 5px solid #ff6b35;
         }
 
         .intro-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
         }
 
         .intro-card h3 {
-            color: #667eea;
-            margin-bottom: 0.5rem;
+            color: #ff6b35;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        /* 媒體區域 - 影片和照片 */
+        .media-section {
+            border-left: 5px solid #4caf50;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .video-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .video-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .photo-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .photo-item:hover img {
+            transform: scale(1.1);
+        }
+
+        /* 統計圖表區 */
+        .chart-section {
+            border-left: 5px solid #00bcd4;
+        }
+
+        .chart-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 15px;
+        }
+
+        /* 行事曆區 */
+        .calendar-section {
+            border-left: 5px solid #9c27b0;
         }
 
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 1.5rem;
-            margin-top: 1.5rem;
+            margin-top: 2rem;
         }
 
         .event-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 1.5rem;
-            border-radius: 10px;
-            transition: transform 0.3s;
+            padding: 2rem;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .event-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            transition: all 0.5s ease;
         }
 
         .event-card:hover {
-            transform: scale(1.05);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
         }
 
-        .event-card h3 {
-            margin-bottom: 0.5rem;
+        .event-card:hover::before {
+            transform: scale(1.5);
+        }
+
+        .event-content {
+            position: relative;
+            z-index: 1;
         }
 
         .event-date {
             font-weight: bold;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             margin-bottom: 0.5rem;
         }
 
-        .file-zone {
-            background: #f8f9fa;
-            border: 2px dashed #667eea;
-            border-radius: 10px;
-            padding: 3rem;
-            text-align: center;
-            margin-top: 1.5rem;
-            transition: all 0.3s;
+        /* 同學網站連結區 */
+        .links-section {
+            border-left: 5px solid #f44336;
         }
 
-        .file-zone:hover {
-            background: #e8eaf6;
-            border-color: #764ba2;
-        }
-
-        .file-list {
-            margin-top: 1.5rem;
+        .links-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
         }
 
-        .file-item {
-            background: white;
-            border: 1px solid #ddd;
-            padding: 1rem;
-            border-radius: 8px;
+        .link-card {
+            background: linear-gradient(135deg, #f44336 0%, #e91e63 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-decoration: none;
+            display: block;
+            transition: all 0.3s ease;
             text-align: center;
         }
 
-        .bulletin-list {
-            margin-top: 1.5rem;
+        .link-card:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(244, 67, 54, 0.4);
         }
 
-        .bulletin-item {
-            background: #f8f9fa;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            border-radius: 10px;
-            border-left: 4px solid #f44336;
-        }
-
-        .bulletin-item h3 {
-            color: #f44336;
+        .link-card h3 {
             margin-bottom: 0.5rem;
         }
 
-        .bulletin-date {
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-        }
-
+        /* 響應式設計 */
         @media (max-width: 768px) {
             nav ul {
-                gap: 1rem;
+                gap: 0.5rem;
+            }
+
+            nav a {
+                padding: 0.4rem 1rem;
+                font-size: 0.9rem;
             }
 
             section {
@@ -238,111 +357,383 @@
                 font-size: 2rem;
             }
 
+            .hero p {
+                font-size: 1.1rem;
+            }
+
             h2 {
                 font-size: 1.5rem;
             }
+
+            .intro-grid,
+            .video-grid,
+            .calendar-grid,
+            .links-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .photo-gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .hero {
+                padding: 3rem 1rem;
+            }
+
+            .hero h1 {
+                font-size: 1.5rem;
+            }
+
+            nav a {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.8rem;
+            }
+        }
+
+        /* 按鈕樣式 */
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* 佔位圖片樣式 */
+        .placeholder-img {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
         }
     </style>
 </head>
 <body>
+    <!-- 導航列 -->
     <nav>
         <ul>
-            <li><a href="#home">首頁</a></li>
-            <li><a href="#intro">團隊介紹</a></li>
-            <li><a href="#calendar">行事曆</a></li>
-            <li><a href="#files">檔案交換區</a></li>
-            <li><a href="#bulletin">公佈欄</a></li>
+            <li><a href="#home">🏠 首頁</a></li>
+            <li><a href="#intro">👥 團隊介紹</a></li>
+            <li><a href="#media">🎬 影音相簿</a></li>
+            <li><a href="#chart">📊 統計圖表</a></li>
+            <li><a href="#calendar">📅 行事曆</a></li>
+            <li><a href="#links">🔗 同學網站</a></li>
         </ul>
     </nav>
 
     <div class="container">
+        <!-- 1. 首頁 -->
         <section id="home" class="hero">
-            <h1>歡迎來到我的個人網站</h1>
-            <p>探索、學習、成長</p>
+            <div class="hero-content">
+                <h1>歡迎來到我的個人網站</h1>
+                <p>探索 · 學習 · 成長 · 分享</p>
+                <a href="#intro" class="btn">開始探索</a>
+            </div>
         </section>
 
-        <section id="intro" class="section-orange">
-            <h2>團隊介紹</h2>
-            <div class="intro-content">
+        <!-- 2. 團隊介紹 -->
+        <section id="intro">
+            <h2>👥 團隊介紹</h2>
+            <div class="intro-grid">
                 <div class="intro-card">
-                    <h3>關於我們</h3>
-                    <p>我們是一個充滿熱情與創意的團隊，致力於提供優質的服務與創新的解決方案。</p>
+                    <h3>🎯 關於我</h3>
+                    <p>我是一名熱愛學習的學生，對於網頁設計和程式開發充滿熱情。喜歡透過科技解決問題，創造有價值的產品。</p>
                 </div>
                 <div class="intro-card">
-                    <h3>團隊願景</h3>
-                    <p>成為業界領先的創新團隊，透過技術與創意改變世界。</p>
+                    <h3>💡 專業技能</h3>
+                    <p>擅長 HTML、CSS、JavaScript 等前端技術，同時也在學習後端開發。注重使用者體驗與介面設計。</p>
                 </div>
                 <div class="intro-card">
-                    <h3>核心價值</h3>
-                    <p>誠信、創新、合作、追求卓越是我們的核心價值觀。</p>
+                    <h3>🚀 興趣愛好</h3>
+                    <p>喜歡閱讀科技文章、參與開源專案、攝影、旅行，以及與朋友分享學習心得。</p>
+                </div>
+                <div class="intro-card">
+                    <h3>🎓 學習目標</h3>
+                    <p>持續精進技術能力，成為一名全端工程師，並能夠開發出幫助他人的優質應用程式。</p>
                 </div>
             </div>
         </section>
 
-        <section id="calendar" class="section-green">
-            <h2>行事曆</h2>
+        <!-- 3. 影音相簿 -->
+        <section id="media" class="media-section">
+            <h2>🎬 影音相簿</h2>
+            <h3 style="color: #4caf50; margin-bottom: 1.5rem;">我最喜歡的影片</h3>
+            <div class="video-grid">
+                <div class="video-item">
+                    <div class="video-container">
+                        <iframe  
+                            src="https://www.youtube.com/embed/5ngWIDkPP3o?list=RD5ngWIDkPP3o" 
+                            title="Arabian cat - (Official Music VIdeo) ft.Panjabi MC" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            referrerpolicy="strict-origin-when-cross-origin" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                    <p style="margin-top: 0.5rem; color: #666; text-align: center;">經典懷舊歌曲</p>
+                </div>
+                <div class="video-item">
+                    <div class="video-container">
+                        <iframe 
+                            src="https://www.youtube.com/embed/2yJgwwDcgV8?list=RD2yJgwwDcgV8" 
+                            title="Nyan Cat! [Official]" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            referrerpolicy="strict-origin-when-cross-origin"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                    <p style="margin-top: 0.5rem; color: #666; text-align: center;">療癒動畫音樂</p>
+                </div>
+                <div class="video-item">
+                    <div class="video-container">
+                        <iframe 
+                            src="https://www.youtube.com/embed/jyV2L5g1olY?list=RDjyV2L5g1olY" 
+                            title="王世堅神曲-沒出息" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            referrerpolicy="strict-origin-when-cross-origin"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                    <p style="margin-top: 0.5rem; color: #666; text-align: center;">洗腦神曲</p>
+                </div>
+            </div>
+            
+            <h3 style="color: #4caf50; margin: 2rem 0 1rem;">精彩照片集</h3>
+            <div class="photo-gallery">
+                <div class="photo-item">
+                    <div class="placeholder-img">📷</div>
+                </div>
+                <div class="photo-item">
+                    <div class="placeholder-img">🌅</div>
+                </div>
+                <div class="photo-item">
+                    <div class="placeholder-img">🏔️</div>
+                </div>
+                <div class="photo-item">
+                    <div class="placeholder-img">🌊</div>
+                </div>
+            </div>
+            <p style="margin-top: 1rem; color: #666;">記錄生活中的美好瞬間，分享旅行與學習的點滴。</p>
+        </section>
+
+        <!-- 4. JavaScript 統計圖表 -->
+        <section id="chart" class="chart-section">
+            <h2>📊 學習成果統計圖表</h2>
+            <p style="margin-bottom: 1rem; color: #666;">以下是我這學期各科目的學習時數統計</p>
+            <div class="chart-container">
+                <canvas id="myChart"></canvas>
+            </div>
+            <div class="chart-container" style="margin-top: 2rem;">
+                <canvas id="lineChart"></canvas>
+            </div>
+        </section>
+
+        <!-- 5. 行事曆 -->
+        <section id="calendar" class="calendar-section">
+            <h2>📅 行事曆</h2>
             <div class="calendar-grid">
                 <div class="event-card">
-                    <div class="event-date">📅 2025/10/20</div>
-                    <h3>團隊會議</h3>
-                    <p>每週例行會議，討論專案進度與規劃</p>
+                    <div class="event-content">
+                        <div class="event-date">📅 2025/10/20 (一)</div>
+                        <h3>期中考試</h3>
+                        <p>準備網頁設計與資料庫管理科目的期中考試，複習重點章節。</p>
+                    </div>
                 </div>
                 <div class="event-card">
-                    <div class="event-date">📅 2025/10/25</div>
-                    <h3>專案發表</h3>
-                    <p>本季度專案成果展示與分享</p>
+                    <div class="event-content">
+                        <div class="event-date">📅 2025/10/25 (六)</div>
+                        <h3>專題發表</h3>
+                        <p>小組專題報告，展示本學期的網頁設計成果與學習心得。</p>
+                    </div>
                 </div>
                 <div class="event-card">
-                    <div class="event-date">📅 2025/11/01</div>
-                    <h3>教育訓練</h3>
-                    <p>新技術研討與學習交流活動</p>
+                    <div class="event-content">
+                        <div class="event-date">📅 2025/11/01 (六)</div>
+                        <h3>技術研討會</h3>
+                        <p>參加前端技術研討會，學習最新的網頁開發趨勢與工具。</p>
+                    </div>
+                </div>
+                <div class="event-card">
+                    <div class="event-content">
+                        <div class="event-date">📅 2025/11/10 (一)</div>
+                        <h3>小組討論</h3>
+                        <p>與同學討論期末專題方向，分配工作並規劃時程。</p>
+                    </div>
+                </div>
+                <div class="event-card">
+                    <div class="event-content">
+                        <div class="event-date">📅 2025/11/20 (四)</div>
+                        <h3>程式競賽</h3>
+                        <p>參加校內程式設計競賽，挑戰演算法問題。</p>
+                    </div>
+                </div>
+                <div class="event-card">
+                    <div class="event-content">
+                        <div class="event-date">📅 2025/12/15 (一)</div>
+                        <h3>期末專題繳交</h3>
+                        <p>完成並繳交期末專題作品，準備最後的成果展示。</p>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section id="files" class="section-cyan">
-            <h2>檔案交換區</h2>
-            <div class="file-zone">
-                <h3>📁 檔案上傳區</h3>
-                <p>將檔案拖曳至此處或點擊上傳</p>
-                <p style="color: #666; margin-top: 1rem;">支援各種文件格式</p>
-            </div>
-            <div class="file-list">
-                <div class="file-item">
-                    <div style="font-size: 2rem;">📄</div>
-                    <p>專案企劃書.pdf</p>
-                </div>
-                <div class="file-item">
-                    <div style="font-size: 2rem;">📊</div>
-                    <p>數據分析報告.xlsx</p>
-                </div>
-                <div class="file-item">
-                    <div style="font-size: 2rem;">🖼️</div>
-                    <p>設計素材.zip</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="bulletin" class="section-red">
-            <h2>公佈欄</h2>
-            <div class="bulletin-list">
-                <div class="bulletin-item">
-                    <h3>🎉 重要公告：新專案啟動</h3>
-                    <div class="bulletin-date">發布日期：2025/10/15</div>
-                    <p>我們很高興宣布新專案正式啟動！這是一個充滿挑戰與機會的計畫，期待所有成員的積極參與。</p>
-                </div>
-                <div class="bulletin-item">
-                    <h3>📢 系統維護通知</h3>
-                    <div class="bulletin-date">發布日期：2025/10/10</div>
-                    <p>系統將於本週六進行例行維護，預計維護時間為 2 小時，期間部分功能可能暫時無法使用。</p>
-                </div>
-                <div class="bulletin-item">
-                    <h3>🏆 團隊成就分享</h3>
-                    <div class="bulletin-date">發布日期：2025/10/05</div>
-                    <p>恭喜團隊成功完成上季度目標！感謝每位成員的辛勤付出，讓我們繼續朝下個里程碑前進！</p>
-                </div>
+        <!-- 6. 同學網站連結 -->
+        <section id="links" class="links-section">
+            <h2>🔗 同學網站連結</h2>
+            <p style="margin-bottom: 1rem; color: #666;">以下是我們班上同學的優秀作品網站</p>
+            <div class="links-grid">
+                <a href="https://example-student1.com" target="_blank" class="link-card">
+                    <h3>👨‍💻 王小明的網站</h3>
+                    <p>專注於遊戲開發與3D動畫設計</p>
+                </a>
+                <a href="https://example-student2.com" target="_blank" class="link-card">
+                    <h3>👩‍💻 李小華的網站</h3>
+                    <p>分享UI/UX設計心得與作品集</p>
+                </a>
+                <a href="https://example-student3.com" target="_blank" class="link-card">
+                    <h3>👨‍💻 張大偉的網站</h3>
+                    <p>展示全端開發專案與技術筆記</p>
+                </a>
             </div>
         </section>
     </div>
+
+    <!-- JavaScript 統計圖表 -->
+    <script>
+        // 長條圖 - 學習時數統計
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['HTML/CSS', 'JavaScript', 'Python', '資料庫', '網路概論', '演算法'],
+                datasets: [{
+                    label: '每週學習時數（小時）',
+                    data: [8, 10, 6, 7, 5, 9],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.7)',
+                        'rgba(54, 162, 235, 0.7)',
+                        'rgba(255, 206, 86, 0.7)',
+                        'rgba(75, 192, 192, 0.7)',
+                        'rgba(153, 102, 255, 0.7)',
+                        'rgba(255, 159, 64, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '各科目每週學習時數統計',
+                        font: {
+                            size: 18
+                        }
+                    },
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: '時數（小時）'
+                        }
+                    }
+                }
+            }
+        });
+
+        // 折線圖 - 成績進步趨勢
+        const ctx2 = document.getElementById('lineChart').getContext('2d');
+        const lineChart = new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: ['第1週', '第2週', '第3週', '第4週', '第5週', '第6週', '第7週', '第8週'],
+                datasets: [{
+                    label: '測驗平均分數',
+                    data: [75, 78, 82, 80, 85, 88, 90, 92],
+                    borderColor: 'rgba(102, 126, 234, 1)',
+                    backgroundColor: 'rgba(102, 126, 234, 0.2)',
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '本學期測驗成績進步趨勢',
+                        font: {
+                            size: 18
+                        }
+                    },
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: '分數'
+                        }
+                    }
+                }
+            }
+        });
+
+        // 平滑滾動效果
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
